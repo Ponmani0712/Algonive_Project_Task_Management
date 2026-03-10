@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link rel="stylesheet" href="../static/style.css">
+  <style>
+    .cont {
+        width: 420px;
+        background: #ffffff17;
+        padding: 0px;
+        border-radius: 12px;
+        box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    input {
+  color: #4b0082;
+  font-weight: 500;
+  background-color: #4c00823b;
+}
+
+    
+  </style>
+</head>
+<body>
+
+    <nav>
+        <a href="home.html" class="btn">Back to Home</a>
+    </nav>
+
+<div class="cont">
+  <form class="form-box" onsubmit="loginUser(event)">
+
+    <h2>Login</h2>
+
+    <label for="fname">First Name</label>
+    <input type="text" id="fname" required>
+
+    <label for="lname">Last Name</label>
+    <input type="text" id="lname" required>
+
+    <label for="email">Email</label>
+    <input type="email" id="email" required>
+
+    <label for="password">Password</label>
+    <input type="password" id="password" required>
+
+    <label for="cpassword">Confirm Password</label>
+    <input type="password" id="cpassword" required>
+
+    <button type="submit">Login</button>
+  </form>
+</div>
+<script>
+function loginUser(event) {
+  event.preventDefault();
+
+  const firstName = document.getElementById("fname").value.trim();
+
+  localStorage.setItem("username", firstName);
+
+  window.location.href = "../templates/dashboard.html";
+}
+</script>
+
+</body>
+</html>

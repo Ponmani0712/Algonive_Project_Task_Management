@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Task Manager</title>
+  <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+<div class="main">
+
+
+  <!-- Top Navbar -->
+  <nav class="top-nav">
+    <div class="nav-left">Task Manager</div>
+
+    <div class="nav-right">
+      Hi, <span class="username"></span>
+      <a href="../templates/home.html" class="signout">Sign Out</a>
+    </div>
+  </nav>
+
+
+
+
+
+  <!-- Header -->
+<div class="header">
+      <div>
+        <h1>My Tasks</h1>
+        <div class="subtitle">Organize and track your daily tasks</div>
+      </div>
+      <!-- Add Task Button -->
+  <button class="add-btn" type="button" onclick="openTaskBar()">Add Task</button>
+    </div>
+
+<div class="stats">
+  <div class="card">
+    <h2 id="totalTasks">0</h2>
+    <p>Total Tasks</p>
+  </div>
+
+  <div class="card">
+    <h2 id="completedTasks">0</h2>
+    <p>Completed</p>
+  </div>
+
+  <div class="card">
+    <h2 id="pendingTasks">0</h2>
+    <p>Pending</p>
+  </div>
+</div>
+
+
+
+<!-- Main Content -->
+<div class="dashboard">
+  <!-- Task Form -->
+  <div class="task-bar" id="taskBar">
+    <h3>Add Task</h3>
+    <span class="close-btn" onclick="closeTaskBar()">✕</span>
+
+    <label>Task Name</label>
+    <input type="text" id="taskName">
+
+    <label>Date</label>
+    <input type="date" id="taskDate">
+
+    <label>Description</label>
+    <textarea id="taskDesc"></textarea>
+
+    <label>Priority</label>
+    <select id="taskPriority">
+      <option>Low</option>
+      <option>Medium</option>
+      <option>High</option>
+    </select>
+
+    <label>State</label>
+    <select id="taskState">
+      <option>To Do</option>
+      <option>In Progress</option>
+      <option>Completed</option>
+    </select>
+
+    <button type="button" class="ok-btn" onclick="addTask()">OK</button>
+  </div>
+
+  <!-- Task container -->
+  <div class="tasks-container" id="tasksContainer"></div>
+</div>
+
+
+
+<script>
+const user = localStorage.getItem("username");
+document.querySelector(".username").textContent =
+  user && user !== "" ? user : "User";
+
+// GLOBAL STATE
+let tasks = [];
+
+// Open / Close task form
+function openTaskBar() {
+  document.getElementById("taskBar").style.display = "block";
+}
+
+function closeTaskBar() {
+  document.getElementById("taskBar").style.display = "none";
+}
+
+// ADD TASK
+function addTask() {
+  const name = document.getElementById("taskName").value.trim();
+  const date = document.getElementById("taskDate").value;
+  const desc = document.getElementById("taskDesc").value.trim();
+  const priority = document.getElementById("taskPriority").value;
+  const state = document.getElementById("taskState").value;
+
+  if (!name || !date || !desc) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  const task = {
+    id: Date.now(),
+    name,
+    desc,
+    date,
+    priority,
+    state
+  };
+
+  tasks.push(task);
+
+  renderTasks();
+  updateStats();
+
+  // Clear form
+  document.getElementById("taskName").value = "";
+  document.getElementById("taskDate").value = "";
+  document.getElementById("taskDesc").value = "";
+  document.getElementById("taskPriority").value = "Low";
+  document.getElementById("taskState").value = "To Do";
+
+  closeTaskBar();
+}
+
+// RENDER TASKS
+function renderTasks() {
+  const container = document.getElementById("tasksContainer");
+  container.innerHTML = "";
+
+  tasks.forEach(task => {
+    const formattedDate = new Date(task.date).toLocaleDateString("en-GB");
+
+    let stateClass = "";
+    if (task.state === "To Do") stateClass = "state-todo";
+    else if (task.state === "In Progress") stateClass = "state-inprogress";
+    else if (task.state === "Completed") stateClass = "state-completed";
+
+    const taskCard = document.createElement("div");
+    taskCard.className = "task-card";
+
+    taskCard.innerHTML = `
+      <p><strong>Name:</strong> ${task.name}</p>
+      <p><strong>Description:</strong> ${task.desc}</p>
+      <p><strong>Date:</strong> ${formattedDate}</p>
+      <p><strong>Priority:</strong> ${task.priority}</p>
+      <p class="state ${stateClass}">
+        <strong>State:</strong> ${task.state}
+      </p>
+    `;
+
+    container.appendChild(taskCard);
+  });
+}
+
+// UPDATE STATS
+function updateStats() {
+  const total = tasks.length;
+  const completed = tasks.filter(t => t.state === "Completed").length;
+  const pending = total - completed;
+
+  document.getElementById("totalTasks").textContent = total;
+  document.getElementById("completedTasks").textContent = completed;
+  document.getElementById("pendingTasks").textContent = pending;
+}
+</script>
+
+
+</div>
+</body>
+</html>
